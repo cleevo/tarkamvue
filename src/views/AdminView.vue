@@ -8,16 +8,18 @@
                     <h3>{{ tim_1 }}</h3>
                     <h3>{{ tim_11 }}</h3>
                     <h1>{{ score_1 }}</h1>
+                    <h3>{{ tim_1_score }}</h3>
                 </div>
                 <div class="TitleRight">
                     <h3>{{ tim_2 }}</h3>
                     <h3>{{ tim_21 }}</h3>
                     <h1>{{ score_2}}</h1>
+                    <h3>{{ tim_2_score }}</h3>
                 </div>
             </div>
             <h2 class="Banner"><button @click="start">START</button></h2>
             <h2 class="Banner"><button @click="stop">STOP</button></h2>
-            <h2 class="Banner"><button @click="playGoal">GOAL</button></h2>
+            <!-- <h2 class="Banner"><button @click="playGoal">GOAL</button></h2> -->
             <!-- <h2 class="Banner">{{score_2}}</h2> -->
         </div>
     </div>
@@ -35,9 +37,11 @@ export default {
             time_remaining: 60,
             tim_1: 'JIMBARAN',
             tim_11: 'BADUNG',
+            tim_1_score: 2,
             score_1: null,
             tim_2: 'SAWAH BARU',
             tim_21: 'TANGSEL',
+            tim_2_score: 1,
             score_2: null,
             /*
             connection: {
@@ -115,7 +119,10 @@ export default {
             //.then(response => (this.score_1 = response.data[1].score ))
             //.get('http://localhost:3000/score/bali')
             .get('https://tarkam.herokuapp.com/score/bali')
-            .then(response => this.score_1 = response.data[0].score)
+            .then(response => { if(response.data[0].score > this.score_1 || response.data[0].score == 0) { 
+                this.playGoal(); 
+                this.score_1 = response.data[0].score }
+            })
             //.then(response => (this.score_1 = JSON.parse(response.data) ))
             .catch(error => console.log(error))
         },
@@ -125,7 +132,10 @@ export default {
             //.then(response => (this.score_2 = response.data[1].score ))
             //.get('http://localhost:3000/score/tangerang')
             .get('https://tarkam.herokuapp.com/score/tangerang')
-            .then(response => this.score_2 = response.data[0].score)
+            .then(response => { if(response.data[0].score > this.score_2 || response.data[0].score == 0) { 
+                this.playGoal(); 
+                this.score_2 = response.data[0].score }
+            })
             //.then(response => (this.myObj = JSON.parse(response.data)), this.score_2 = this.myObj)
             .catch(error => console.log(error))
         },
@@ -134,7 +144,7 @@ export default {
                 this.callApiScoreBali();
                 this.callApiScoreTangerang();
                 //this.callApiScoreTangerang();
-            }, 1000);
+            }, 700);
         },
         playCheeringAlong() {
             var audio = new Audio(require('../assets/cheering-along.mp3'));
@@ -224,11 +234,6 @@ export default {
             if(this.time_remaining < 0){ 
                 this.stop();
                 this.time_remaining = 60; 
-            }
-        },
-        score_1: function(newValue, oldValue) {
-            if(newValue > oldValue) {
-                this.playGoal();
             }
         }
     }

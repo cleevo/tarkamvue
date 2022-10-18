@@ -2,7 +2,6 @@ const { defineConfig } = require('@vue/cli-service')
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 const webpack = require('webpack');
 module.exports = defineConfig({
-  publicPath: process.env.NODE_ENV === 'production' ? '/tarkamvue/' : '/',
   transpileDependencies: true,
   configureWebpack: {
     plugins: [
